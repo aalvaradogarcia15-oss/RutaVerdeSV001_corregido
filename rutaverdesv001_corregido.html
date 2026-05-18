@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌿 Ruta Verde SV - Proyecto IIS (Versión Corregida)</title>
+    <style>
+        /* CSS medio básico pero funcional */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #e6f4e8;
+        }
+        header {
+            background: #2e7d64;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+        .contenedor {
+            max-width: 1100px;
+            margin: auto;
+            padding: 1rem;
+        }
+        .filtros {
+            background: white;
+            padding: 1rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .filtros div {
+            flex: 1;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 10px;
+            border: 1px solid #aaa;
+        }
+        button {
+            background: #2e7d64;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 1.2rem;
+        }
+        .tarjetas {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.2rem;
+        }
+        .card {
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        .card-body {
+            padding: 0.8rem;
+        }
+        .card-body h3 {
+            margin: 0 0 0.3rem 0;
+        }
+        .depto {
+            color: #2e7d64;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        .precio {
+            margin: 0.5rem 0;
+        }
+        .mapa-falso {
+            background: #c8e0c6;
+            height: 180px;
+            border-radius: 18px;
+            margin: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        footer {
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.7rem;
+            color: #4a6e5a;
+        }
+        .resenas-section {
+            background: white;
+            border-radius: 18px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        .error {
+            color: red;
+            background: #ffe0e0;
+            padding: 0.5rem;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🌿 Ruta Verde SV</h1>
+    <p>Descubrí los mejores espacios naturales de El Salvador</p>
+</header>
+
+<div class="contenedor">
+    <!-- Filtros -->
+    <div class="filtros">
+        <div>
+            <label>🔍 Buscar lugar:</label>
+            <input type="text" id="buscarTexto" placeholder="ej: Cerro Verde">
+        </div>
+        <div>
+            <label>📍 Departamento:</label>
+            <select id="filtroDepto">
+                <option value="">-- Todos --</option>
+                <option value="Santa Ana">Santa Ana</option>
+                <option value="San Salvador">San Salvador</option>
+                <option value="La Libertad">La Libertad</option>
+                <option value="San Miguel">San Miguel</option>
+                <option value="Morazán">Morazán</option>
+            </select>
+        </div>
+        <div>
+            <button id="btnBuscar">Buscar 🌟</button>
+        </div>
+    </div>
+
+    <!-- Resultados -->
+    <div id="resultados" class="tarjetas"></div>
+
+    <!-- Mapa de reciclaje (solo decorativo, no es interactivo aún) -->
+    <div class="mapa-falso">
+        <span>♻️ Punto de reciclaje más cercano: Parque Central, Santa Ana</span>
+    </div>
+
+    <!-- Sección de reseñas CON VALIDACIÓN CORREGIDA -->
+    <div class="resenas-section">
+        <h3>✍️ Dejá tu comentario</h3>
+        <input type="text" id="nombreUsuario" placeholder="Tu nombre" style="width:100%; margin-bottom:0.5rem;">
+        <textarea id="comentario" rows="2" placeholder="Escribí tu reseña..." style="width:100%; border-radius:10px;"></textarea>
+        <button id="btnPublicar">Publicar reseña</button>
+        <div id="listaResenas" style="margin-top:1rem;">
+            <p><strong>María G:</strong> El Cerro Verde es increíble, fui con mi familia.</p>
+            <p><strong>Carlos:</strong> El Lago de Coatepeque está hermoso, pero falta señalización.</p>
+        </div>
+    </div>
+</div>
+
+<footer>
+    🌱 Proyecto IIS135 - "Cero defectos" - Equipo GT01 (Versión B corregida)
+</footer>
+
+<script>
+    // ======================= DATOS DE EJEMPLO (MODIFICADOS) =======================
+    const lugares = [
+        { id: 1, nombre: "Cerro Verde", departamento: "Santa Ana", precio: "$3 entrada", rating: 4.5, img: "https://picsum.photos/id/104/300/200" },
+        { id: 2, nombre: "Lago de Coatepeque", departamento: "Santa Ana", precio: "Gratis", rating: 4.7, img: "https://picsum.photos/id/96/300/200" },
+        // CAMBIO: antes era "Parque Nacional El Boquerón", ahora es "Parque Cuscatlán"
+        { id: 3, nombre: "Parque Cuscatlán", departamento: "San Salvador", precio: "Gratis", rating: 4.6, img: "https://picsum.photos/id/15/300/200" },
+        { id: 4, nombre: "Jardín Botánico La Laguna", departamento: "San Salvador", precio: "$2", rating: 4.2, img: "https://picsum.photos/id/10/300/200" },
+        { id: 5, nombre: "Playa El Tunco", departamento: "La Libertad", precio: "Gratis", rating: 4.8, img: "https://picsum.photos/id/29/300/200" },
+        { id: 6, nombre: "Cerro El Pital", departamento: "Morazán", precio: "Gratis", rating: 4.4, img: "https://picsum.photos/id/91/300/200" },
+        { id: 7, nombre: "Parque Montecristo", departamento: "Santa Ana", precio: "$5", rating: 4.6, img: "https://picsum.photos/id/128/300/200" },
+        { id: 8, nombre: "Laguna de Olomega", departamento: "San Miguel", precio: "Gratis", rating: 4.0, img: "https://picsum.photos/id/89/300/200" }
+    ];
+
+    // Función para escapar caracteres especiales (seguridad básica)
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // Función corregida: filtro por departamento con comparación EXACTA (===)
+    function filtrarYMostrar() {
+        let textoBusqueda = document.getElementById("buscarTexto").value.toLowerCase();
+        let deptoSeleccionado = document.getElementById("filtroDepto").value;
+        
+        console.log("Texto: " + textoBusqueda + " | Depto: " + deptoSeleccionado); // para depurar
+        
+        let resultados = [];
+        
+        for (let i = 0; i < lugares.length; i++) {
+            let lugar = lugares[i];
+            
+            // Filtro por nombre
+            let cumpleNombre = true;
+            if (textoBusqueda !== "") {
+                if (lugar.nombre.toLowerCase().indexOf(textoBusqueda) === -1) {
+                    cumpleNombre = false;
+                }
+            }
+            
+            // Filtro por departamento - AHORA CORREGIDO: usamos comparación exacta
+            let cumpleDepto = true;
+            if (deptoSeleccionado !== "") {
+                if (lugar.departamento !== deptoSeleccionado) {
+                    cumpleDepto = false;
+                }
+            }
+            
+            if (cumpleNombre && cumpleDepto) {
+                resultados.push(lugar);
+            }
+        }
+        
+        let contenedor = document.getElementById("resultados");
+        if (resultados.length === 0) {
+            contenedor.innerHTML = '<div class="error">😓 No encontramos nada, intentá con otros filtros.</div>';
+            return;
+        }
+        
+        let html = "";
+        for (let i = 0; i < resultados.length; i++) {
+            let l = resultados[i];
+            html += `
+                <div class="card">
+                    <img src="${l.img}" alt="${l.nombre}">
+                    <div class="card-body">
+                        <h3>${l.nombre}</h3>
+                        <div class="depto">📍 ${l.departamento}</div>
+                        <div class="precio">💰 ${l.precio}</div>
+                        <div>⭐ ${l.rating} (${Math.floor(Math.random() * 50) + 10} reseñas)</div>
+                    </div>
+                </div>
+            `;
+        }
+        contenedor.innerHTML = html;
+    }
+    
+    // ========== FUNCIÓN DE RESEÑAS CORREGIDA (validación + código secreto) ==========
+    function publicarResena() {
+        let nombre = document.getElementById("nombreUsuario").value.trim();
+        let comentario = document.getElementById("comentario").value.trim();
+        
+        // Validación 1: nombre no vacío
+        if (nombre === "") {
+            alert("❌ Por favor, escribí tu nombre para publicar una reseña.");
+            return;
+        }
+        // Validación 2: comentario no vacío
+        if (comentario === "") {
+            alert("❌ El comentario no puede estar vacío. Escribí tu experiencia.");
+            return;
+        }
+        
+        // Simulación de autenticación: código secreto (para que no cualquiera publique)
+        let codigo = prompt("🔐 Código de seguridad (escribe 'verde' para publicar):");
+        if (codigo !== "verde") {
+            alert("Código incorrecto. No se publicó la reseña.");
+            return;
+        }
+        
+        // Si pasa todas las validaciones, se agrega la reseña
+        let lista = document.getElementById("listaResenas");
+        let nuevoParrafo = document.createElement("p");
+        nuevoParrafo.innerHTML = `<strong>${escapeHtml(nombre)}:</strong> ${escapeHtml(comentario)}`;
+        lista.appendChild(nuevoParrafo);
+        
+        // Limpiar campos
+        document.getElementById("nombreUsuario").value = "";
+        document.getElementById("comentario").value = "";
+        
+        // Mensaje de éxito
+        alert("✅ Reseña publicada correctamente. ¡Gracias por compartir!");
+    }
+    
+    // Eventos
+    document.getElementById("btnBuscar").addEventListener("click", filtrarYMostrar);
+    document.getElementById("btnPublicar").addEventListener("click", publicarResena);
+    
+    // Cargar todos los lugares al iniciar
+    filtrarYMostrar();
+    
+    // Nota: el mapa de reciclaje sigue siendo solo texto (no crítico, se puede mejorar después)
+</script>
+
+</body>
+</html>
