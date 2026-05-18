@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🌿 Ruta Verde SV - Proyecto IIS (Versión Corregida)</title>
     <style>
-        /* CSS medio básico pero funcional */
+        
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -154,7 +154,6 @@
         <span>♻️ Punto de reciclaje más cercano: Parque Central, Santa Ana</span>
     </div>
 
-    <!-- Sección de reseñas CON VALIDACIÓN CORREGIDA -->
     <div class="resenas-section">
         <h3>✍️ Dejá tu comentario</h3>
         <input type="text" id="nombreUsuario" placeholder="Tu nombre" style="width:100%; margin-bottom:0.5rem;">
@@ -172,7 +171,7 @@
 </footer>
 
 <script>
-    // ======================= DATOS DE EJEMPLO (MODIFICADOS) =======================
+
     const lugares = [
         { id: 1, nombre: "Cerro Verde", departamento: "Santa Ana", precio: "$3 entrada", rating: 4.5, img: "https://picsum.photos/id/104/300/200" },
         { id: 2, nombre: "Lago de Coatepeque", departamento: "Santa Ana", precio: "Gratis", rating: 4.7, img: "https://picsum.photos/id/96/300/200" },
@@ -185,7 +184,6 @@
         { id: 8, nombre: "Laguna de Olomega", departamento: "San Miguel", precio: "Gratis", rating: 4.0, img: "https://picsum.photos/id/89/300/200" }
     ];
 
-    // Función para escapar caracteres especiales (seguridad básica)
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
@@ -196,7 +194,6 @@
         });
     }
 
-    // Función corregida: filtro por departamento con comparación EXACTA (===)
     function filtrarYMostrar() {
         let textoBusqueda = document.getElementById("buscarTexto").value.toLowerCase();
         let deptoSeleccionado = document.getElementById("filtroDepto").value;
@@ -216,7 +213,6 @@
                 }
             }
             
-            // Filtro por departamento - AHORA CORREGIDO: usamos comparación exacta
             let cumpleDepto = true;
             if (deptoSeleccionado !== "") {
                 if (lugar.departamento !== deptoSeleccionado) {
@@ -253,30 +249,25 @@
         contenedor.innerHTML = html;
     }
     
-    // ========== FUNCIÓN DE RESEÑAS CORREGIDA (validación + código secreto) ==========
     function publicarResena() {
         let nombre = document.getElementById("nombreUsuario").value.trim();
         let comentario = document.getElementById("comentario").value.trim();
         
-        // Validación 1: nombre no vacío
         if (nombre === "") {
             alert("❌ Por favor, escribí tu nombre para publicar una reseña.");
             return;
-        }
-        // Validación 2: comentario no vacío
+    }
         if (comentario === "") {
             alert("❌ El comentario no puede estar vacío. Escribí tu experiencia.");
             return;
         }
         
-        // Simulación de autenticación: código secreto (para que no cualquiera publique)
         let codigo = prompt("🔐 Código de seguridad (escribe 'verde' para publicar):");
         if (codigo !== "verde") {
             alert("Código incorrecto. No se publicó la reseña.");
             return;
         }
         
-        // Si pasa todas las validaciones, se agrega la reseña
         let lista = document.getElementById("listaResenas");
         let nuevoParrafo = document.createElement("p");
         nuevoParrafo.innerHTML = `<strong>${escapeHtml(nombre)}:</strong> ${escapeHtml(comentario)}`;
@@ -290,14 +281,12 @@
         alert("✅ Reseña publicada correctamente. ¡Gracias por compartir!");
     }
     
-    // Eventos
     document.getElementById("btnBuscar").addEventListener("click", filtrarYMostrar);
     document.getElementById("btnPublicar").addEventListener("click", publicarResena);
     
-    // Cargar todos los lugares al iniciar
+    
     filtrarYMostrar();
     
-    // Nota: el mapa de reciclaje sigue siendo solo texto (no crítico, se puede mejorar después)
 </script>
 
 </body>
